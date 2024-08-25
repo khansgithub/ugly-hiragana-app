@@ -113,8 +113,7 @@
   <button id="next_word" @click="e => submitWord()"> > </button>
   <textarea class="input-box" v-text="inputBoxText"></textarea>
   <div class="kb">  
-    <div ref="letterRomanjiHoverElem" :class="letterRomanjiClasses"> {{ letterRomanjiHoverValue }} </div>
-
+    <div ref="letterRomanjiHoverElem" :class="letterRomanjiClasses"><p>{{ letterRomanjiHoverValue }}</p></div>
     <div class="row" v-for="row in kb_data">
       <div class="letter"
         :id="`h-char-${hiragana}`"
@@ -189,10 +188,10 @@
 
 .letter {
   /*    position: relative;*/
-  background: white;
+  background: var(--letter-bg);
   width: var(--letter-width);
   height: var(--letter-width);
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--input-border-bg);
   text-align: center;
   transition: background ease-in-out 0.2s;
   cursor: default;
@@ -200,12 +199,12 @@
 }
 
 .letter:hover {
-  background: lightgrey;
+  background: var(--letter-hover-bg);
 }
 
 .letter:active {
   transition: background-color ease-in-out 0.0s;
-  background: grey;
+  background: (--letter-active-bg);
 }
 
 .letter p {
@@ -233,15 +232,18 @@
 }
 
 .highlight {
-  background-color: lightgrey;
+  background-color: var(--highlight-bg);
 }
 
 textarea.input-box{
-  border: 1px dashed rgba(0,0,0,0.1);
+  border: 1px dashed var(--input-border-bg);
   width: 30%;
   height: var(--font-size);
   font-size: calc(var(--font-size)/2);
   text-align: center;
+  background: var(--bg);
+  color: var(--color-text);
+  margin-bottom: 2px;
 }
 
 .letterRomanjiHover {

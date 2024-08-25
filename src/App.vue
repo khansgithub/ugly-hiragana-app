@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import Quiz from './components/Quiz.vue';
-import { ref, watch } from 'vue';
+import { getCurrentInstance, onMounted, ref, watch, type Component } from 'vue';
 
+const componentRoot = ref<HTMLElement | null>(null);
 const themeToggle = ref(false);
 
 const lightTheme = [
@@ -10,41 +11,51 @@ const lightTheme = [
   `--letter-hover-bg: lightgrey;`,
   `--letter-active-bg: grey;`,
   `--highlight-bg: lightgrey;`,
-  `--input-border-bg: black;`,
-  `--bg: rgba(0, 0, 0, 0.02)`
+  `--input-border-bg: rgba(0,0,0,0.1);`,
+  `--bg: rgba(0, 0, 0, 0.02);`,
+  `--color-text: var(--vt-c-text-light-1);`
 ];
 
 const darkTheme = [
   `--letter-bg: black;`,
-  `--letter-hover-bg: darkgrey;`,
-  `--letter-active-bg: cream;`,
+  `--letter-hover-bg: grey;`,
+  `--letter-active-bg: grey;`,
   `--highlight-bg: darkgrey;`,
-  `--input-border-bg: white;`,
-  `--bg: rgba(0, 0, 0, 0.98)`
+  `--input-border-bg: rgba(255,255,255,0.1);`,
+  `--bg: rgba(0, 0, 0, 0.98);`,
+  `--color-text: var(--vt-c-text-dark-1);`
 ]
 
-const theme = ref<string[]>();
-
 watch(themeToggle, (newValue, oldValue) => {
-  theme.value = themeToggle ? darkTheme : lightTheme;
+  console.log(themeToggle);
+  if (!componentRoot.value) return;
+  let app: HTMLElement = componentRoot.value as HTMLElement;
+  if (!app.parentElement) {return};
+  app = app.parentElement;
+
+  let theme:string[] = newValue ? darkTheme : lightTheme;
+  app.setAttribute("style", theme.join(""));
 });
+
+onMounted(() => {
+  
+})
 
 </script>
 
 <template>
+  <span ref="componentRoot"></span>
   <header>
-    <div id="modeButton"><button @click="themeToggle = !themeToggle"> dark </button></div>
+    <button id="modeButtonBtn" @click="themeToggle = !themeToggle"><div id="modeButton"> <p>🌙</p> </div></button>
     <div class="wrapper">
       <nav>
         <!-- <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink> -->
+        <RouterLink to="/about">About</RouterLink> -->  
       </nav>
     </div>
   </header>
   <!-- <RouterView /> -->
-  <main :style="theme?.join('')">
-    <Quiz></Quiz>
-  </main>
+  <Quiz></Quiz>
 </template>
 
 <style>
@@ -53,24 +64,24 @@ watch(themeToggle, (newValue, oldValue) => {
   --letter-hover-bg: lightgrey;
   --letter-active-bg: grey;
   --highlight-bg: lightgrey;
-  --input-border-bg: black;
+  --input-border-bg: rgba(0,0,0,0.1);
   --bg: rgba(0, 0, 0, 0.02)
 }
 
-body {
+#app {
   background: var(--bg);
 }
 
-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+#modeButtonBtn{
+  all: unset; /* Remove all default styles */
+  display: inline-block; /* Maintain button-like behavior */
+  cursor: pointer; /* Ensure the cursor shows as a pointer */
 }
 
 #modeButton {
-  margin: 0;
+  margin: 5px;
   padding: 0;
   background-color: none;
+  font-size: calc(var(--font-size)/5);
 }
 </style>
