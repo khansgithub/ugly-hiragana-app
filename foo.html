@@ -1,0 +1,474 @@
+
+<!--  todo
+    - missing some letters on the keyboard like DO (fixed)
+ -->
+
+ <style>
+  :root {
+    --letter-width: auto;
+/*    --letter-width: 25px;*/
+    --romanji-hover: '';
+    --font-size: 2.5em;
+    --font-family: monospace;
+    --blink-correct: green;
+    --blink-incorrect: red;
+  }
+
+    @keyframes blink {
+/*        0% { background-color: rgba(255,0,0); }*/
+        100% { color: var(--blink-colour, black); }
+    }
+
+    .blink-wrong {
+        --blink-colour: var(--blink-incorrect);
+        animation: blink 1s alternate-reverse;
+    }
+
+    .blink-right {
+        --blink-colour: var(--blink-correct);
+        animation: blink 1s alternate-reverse;
+    }
+
+  main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+
+  }
+  .kb{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .row p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .letter{
+/*    position: relative;*/
+    background: white;
+    width: var(--letter-width);
+    height: var(--letter-width);
+    border: 1px solid rgba(0,0,0,0.3);
+    text-align: center;
+    transition: background ease-in-out 0.2s;
+    cursor: default;
+    user-select: none;
+  }
+
+  .letter:hover{
+    background: lightgrey;
+  }
+
+  .letter::after{
+    content: var(--romanji-hover);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    position: absolute;
+    bottom: 30vh;
+    right: 0;
+    left: 0;
+/*    font-size: 7px;*/
+    font-family: sans-serif;
+    margin: 5px;
+    line-height: 3px;
+  }
+
+  .letter:hover::after{
+    content: var(--romanji-hover);
+    opacity: 1;
+  }
+
+  .letter:active{
+    transition: background-color ease-in-out 0.0s;
+    background: grey;
+  }
+
+  .indent0-5{
+    margin-left: calc(var(--letter-width)/2);
+  }
+
+  .indent1{
+    margin-left: calc(var(--letter-width));
+  }
+
+  .indent1-5{
+    margin-left: calc(var(--letter-width)*1.5);
+  }
+
+  .indent2{
+    margin-left: calc(var(--letter-width)*2);
+  }
+
+  #word{
+    margin-bottom: 0;
+  }
+
+  .highlight{
+    background-color: lightgrey;
+  }
+
+  textarea.input-box{
+    border: 1px dashed rgba(0,0,0,0.1);
+    width: 30%;
+    height: var(--font-size);
+    font-size: calc(var(--font-size)/2);
+    text-align: center;
+  }
+
+  #word_eng{
+    color: grey;
+  }
+</style>
+
+<main>
+  <h1 id="word"> word </h1>
+  <h4 id="word_eng"> word </h4>
+  <button id="next_word"> > </button>
+  <textarea class="input-box"></textarea>
+  <div class="kb"></div>
+</main>
+<script>
+words = [
+    {
+        "romanji": "asa",
+        "hiragana": "あさ",
+        "english": "morning"
+    },
+    {
+        "romanji": "inu",
+        "hiragana": "いぬ",
+        "english": "dog"
+    },
+    {
+        "romanji": "umi",
+        "hiragana": "うみ",
+        "english": "sea"
+    },
+    {
+        "romanji": "eki",
+        "hiragana": "えき",
+        "english": "station"
+    },
+    {
+        "romanji": "okashi",
+        "hiragana": "おかし",
+        "english": "sweets"
+    },
+    {
+        "romanji": "kasa",
+        "hiragana": "かさ",
+        "english": "umbrella"
+    },
+    {
+        "romanji": "ki",
+        "hiragana": "き",
+        "english": "tree"
+    },
+    {
+        "romanji": "kuruma",
+        "hiragana": "くるま",
+        "english": "car"
+    },
+    {
+        "romanji": "keshiki",
+        "hiragana": "けしき",
+        "english": "scenery"
+    },
+    {
+        "romanji": "kodomo",
+        "hiragana": "こども",
+        "english": "child"
+    },
+    {
+        "romanji": "sakana",
+        "hiragana": "さかな",
+        "english": "fish"
+    },
+    {
+        "romanji": "shio",
+        "hiragana": "しお",
+        "english": "salt"
+    },
+    {
+        "romanji": "sushi",
+        "hiragana": "すし",
+        "english": "sushi"
+    },
+    {
+        "romanji": "sensei",
+        "hiragana": "せんせい",
+        "english": "teacher"
+    },
+    {
+        "romanji": "sora",
+        "hiragana": "そら",
+        "english": "sky"
+    },
+    {
+        "romanji": "tabemono",
+        "hiragana": "たべもの",
+        "english": "food"
+    },
+    {
+        "romanji": "chizu",
+        "hiragana": "ちず",
+        "english": "map"
+    },
+    {
+        "romanji": "tsuki",
+        "hiragana": "つき",
+        "english": "moon"
+    },
+    {
+        "romanji": "tegami",
+        "hiragana": "てがみ",
+        "english": "letter"
+    },
+    {
+        "romanji": "tomodachi",
+        "hiragana": "ともだち",
+        "english": "friend"
+    },
+    {
+        "romanji": "natsu",
+        "hiragana": "なつ",
+        "english": "summer"
+    },
+    {
+        "romanji": "nihon",
+        "hiragana": "にほん",
+        "english": "japan"
+    },
+    {
+        "romanji": "nuno",
+        "hiragana": "ぬの",
+        "english": "cloth"
+    },
+    {
+        "romanji": "neko",
+        "hiragana": "ねこ",
+        "english": "cat"
+    },
+    {
+        "romanji": "nori",
+        "hiragana": "のり",
+        "english": "seaweed (used in sushi)"
+    },
+    {
+        "romanji": "hana",
+        "hiragana": "はな",
+        "english": "flower or nose"
+    },
+    {
+        "romanji": "hito",
+        "hiragana": "ひと",
+        "english": "person"
+    },
+    {
+        "romanji": "fuyu",
+        "hiragana": "ふゆ",
+        "english": "winter"
+    },
+    {
+        "romanji": "heya",
+        "hiragana": "へや",
+        "english": "room"
+    },
+    {
+        "romanji": "hon",
+        "hiragana": "ほん",
+        "english": "book"
+    },
+    {
+        "romanji": "mado",
+        "hiragana": "まど",
+        "english": "window"
+    },
+    {
+        "romanji": "mizu",
+        "hiragana": "みず",
+        "english": "water"
+    },
+    {
+        "romanji": "mushi",
+        "hiragana": "むし",
+        "english": "insect"
+    },
+    {
+        "romanji": "megane",
+        "hiragana": "めがね",
+        "english": "glasses"
+    },
+    {
+        "romanji": "mori",
+        "hiragana": "もり",
+        "english": "forest"
+    },
+    {
+        "romanji": "yama",
+        "hiragana": "やま",
+        "english": "mountain"
+    },
+    {
+        "romanji": "yuki",
+        "hiragana": "ゆき",
+        "english": "snow"
+    },
+    {
+        "romanji": "yoru",
+        "hiragana": "よる",
+        "english": "night"
+    },
+    {
+        "romanji": "rainen",
+        "hiragana": "らいねん",
+        "english": "next year"
+    },
+    {
+        "romanji": "ringo",
+        "hiragana": "りんご",
+        "english": "apple"
+    },
+    {
+        "romanji": "rusu",
+        "hiragana": "るす",
+        "english": "absence"
+    },
+    {
+        "romanji": "reizouko",
+        "hiragana": "れいぞうこ",
+        "english": "refrigerator"
+    },
+    {
+        "romanji": "roku",
+        "hiragana": "ろく",
+        "english": "six"
+    },
+    {
+        "romanji": "watashi",
+        "hiragana": "わたし",
+        "english": "I, me"
+    }
+]
+
+function random_number(bottom, top) {
+  return Math.floor( Math.random() * ( 1 + top - bottom ) ) + bottom;
+}
+
+function setup_word(e){
+  word = document.getElementById("word");
+  word_eng = document.getElementById("word_eng");
+  input_box = document.getElementsByClassName("input-box")[0];
+  if (e != null) e.preventDefault();
+
+  Array.from(document.getElementsByClassName("highlight")).forEach(function (highlighted_letter) {
+    highlighted_letter.classList.remove("highlight");
+  });
+
+  r = random_number(0, words.length-1);
+  w = words[r];
+  word.innerHTML = w["romanji"];
+  word_eng.innerHTML = w["english"];
+  word.setAttribute("hiragana", w["hiragana"]);
+  word.setAttribute("english", w["english"]);
+  input_box.value = "";
+
+  for (let letter of w["hiragana"]){
+    try{
+      l = document.getElementById("h-char-"+letter)
+      document.getElementById("h-char-"+letter).classList.add("highlight");
+    } catch (err) {
+      console.error(letter);
+      console.log(err);
+    }
+  }
+}
+
+function create_kb(){
+  kb_data = {"row1":{"ろ":"ro","ぬ":"nu","ふ":"fu","あ":"a","う":"u","え":"e","お":"o","や":"ya","ゆ":"yu","よ":"yo","わ":"wa","ほ":"ho","へ":"he"},"row2":{"た":"ta","て":"te","い":"i","す":"su","か":"ka","ん":"n","な":"na","に":"ni","ら":"ra","せ":"se"},"row3":{"ち":"chi","と":"to","し":"shi","は":"ha","き":"ki","く":"ku","ま":"ma","の":"no","り":"ri","れ":"re","け":"ke"},"row4":{"む":"mu","つ":"tsu","さ":"sa","そ":"so","ひ":"hi","こ":"ko","み":"mi","も":"mo","ね":"ne","る":"ru","め":"me"},"extra":{"が":"ga","ぎ":"gi","ぐ":"gu","げ":"ge","ご":"go","ざ":"za","じ":"ji","ず":"zu","ぜ":"ze","ぞ":"zo","だ":"da","ぢ":"ji","づ":"zu","で":"de","ど":"do","ば":"ba","び":"bi","ぶ":"bu","べ":"be","ぼ":"bo","ぱ":"pa","ぴ":"pi","ぷ":"pu","ぺ":"pe","ぽ":"po"}}
+
+  dom_kb = document.getElementsByClassName("kb")[0];
+
+  Object.entries(kb_data).forEach(([key, value]) => {
+    const row = document.createElement('div');
+    // indent_value = 0.5 * (parseInt(key[key.length-1])-1);
+    row.classList.add(
+      // `row${indent_value}`.replace(".","-"),
+      "row");
+    letters = "";
+    Object.entries(value).forEach(([hiragana, romanji]) => {
+      letters += `<div class="letter" id="h-char-${hiragana}" romanji="${romanji}"><p>${hiragana}</p></div>`
+    });
+
+    row.innerHTML = letters;
+    dom_kb.appendChild(row);
+  });
+}
+
+function create_kb_events(){
+  input_box = document.getElementsByClassName("input-box")[0];
+
+  for (let letter of document.getElementsByClassName("letter")){
+
+    letter.onclick = function(e){
+      let letter_to_print = this.id.split("-")[2];
+      console.log(this);
+      input_box.value += letter_to_print;
+    };
+
+    letter.onmouseover = function(e){
+      const romanji = this.getAttribute('romanji');
+      this.style.setProperty('--romanji-hover', `"${romanji}"`);
+    }
+
+    letter.onmouseleave = function(e){
+      this.style.removeProperty('--romanji-hover');
+    }
+
+  }
+}
+
+function valiadte_word(){
+  input_box = document.getElementsByClassName("input-box")[0];
+  word = document.getElementById("word");
+  blink = input_box.value == "";
+  blink_class = "";
+
+  user_input = input_box.value;
+
+  function end_blink(event) {
+    dom = event.target;
+    dom.classList.remove(blink_class); // Remove the class after animation ends
+    dom.removeEventListener('animationend', end_blink); // Remove the event listener
+  };
+
+  blink_class = word.getAttribute("hiragana") !== user_input ? "blink-wrong" : "blink-right";
+  word.classList.add(blink_class);
+  word.addEventListener('animationend', end_blink);
+  return blink_class === "blink-right";
+}
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+  create_kb();
+  create_kb_events();
+  document.getElementById("next_word").onclick = (e) => {
+    if (valiadte_word()) setup_word(e);
+  };
+  setup_word(null);
+  // next_word
+
+
+});
+
+</script>
