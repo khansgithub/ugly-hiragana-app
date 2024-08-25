@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import Quiz from './components/Quiz.vue';
-import { getCurrentInstance, onMounted, ref, watch, type Component } from 'vue';
+import { getCurrentInstance, onMounted, ref, watch, type Component, type Ref } from 'vue';
 
-const componentRoot = ref<HTMLElement | null>(null);
+const componentRoot: Ref<HTMLElement | null>= ref(null);
 const themeToggle = ref(false);
 
 const lightTheme = [
@@ -26,20 +26,11 @@ const darkTheme = [
   `--color-text: var(--vt-c-text-dark-1);`
 ]
 
-watch(themeToggle, (newValue, oldValue) => {
-  console.log(themeToggle);
-  if (!componentRoot.value) return;
-  let app: HTMLElement = componentRoot.value as HTMLElement;
-  if (!app.parentElement) {return};
-  app = app.parentElement;
-
-  let theme:string[] = newValue ? darkTheme : lightTheme;
-  app.setAttribute("style", theme.join(""));
+watch(themeToggle, (newValue, _) => {
+  // should i be error handling here? is typecasting correct here?
+  let app: HTMLElement = (componentRoot.value as HTMLElement).parentElement as HTMLElement;
+  app.setAttribute("style", [lightTheme, darkTheme][+newValue].join(""));
 });
-
-onMounted(() => {
-  
-})
 
 </script>
 
@@ -64,7 +55,7 @@ onMounted(() => {
   --letter-hover-bg: lightgrey;
   --letter-active-bg: grey;
   --highlight-bg: lightgrey;
-  --input-border-bg: rgba(0,0,0,0.1);
+  --input-border-bg: rgba(0, 0, 0, 0.1);
   --bg: rgba(0, 0, 0, 0.02)
 }
 
@@ -72,10 +63,10 @@ onMounted(() => {
   background: var(--bg);
 }
 
-#modeButtonBtn{
-  all: unset; /* Remove all default styles */
-  display: inline-block; /* Maintain button-like behavior */
-  cursor: pointer; /* Ensure the cursor shows as a pointer */
+#modeButtonBtn {
+  all: unset;
+  display: inline-block;
+  cursor: pointer;
 }
 
 #modeButton {

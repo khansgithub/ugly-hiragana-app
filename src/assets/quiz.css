@@ -1,0 +1,148 @@
+:root {
+    --letter-width: auto;
+    /*    --letter-width: 25px;*/
+    --romanji-hover: '';
+    --font-size: 2.5em;
+    --font-family: monospace;
+    --blink-correct: green;
+    --blink-incorrect: red;
+  }
+  
+  @keyframes blink {
+    100% {
+      color: var(--blink-colour, unset);
+    }
+  }
+  
+  .blink-wrong {
+    --blink-colour: var(--blink-incorrect);
+    animation: blink 1s alternate-reverse;
+  }
+  
+  .blink-right {
+    --blink-colour: var(--blink-correct);
+    animation: blink 1s alternate-reverse;
+  }
+  
+  #app {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+  }
+  
+  .kb {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .row p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .letter {
+    /*    position: relative;*/
+    background: var(--letter-bg);
+    width: var(--letter-width);
+    height: var(--letter-width);
+    border: 1px solid var(--input-border-bg);
+    text-align: center;
+    transition: background ease-in-out 0.2s;
+    cursor: default;
+    user-select: none;
+  }
+  
+  .letter:hover {
+    background: var(--letter-hover-bg);
+  }
+  
+  .letter:active {
+    transition: background-color ease-in-out 0.0s;
+    background: (--letter-active-bg);
+  }
+  
+  .letter p {
+    display: contents;
+  }
+  
+  .indent0-5 {
+    margin-left: calc(var(--letter-width)/2);
+  }
+  
+  .indent1 {
+    margin-left: calc(var(--letter-width));
+  }
+  
+  .indent1-5 {
+    margin-left: calc(var(--letter-width)*1.5);
+  }
+  
+  .indent2 {
+    margin-left: calc(var(--letter-width)*2);
+  }
+  
+  #word {
+    margin-bottom: 0;
+  }
+  
+  .highlight {
+    background-color: var(--highlight-bg);
+  }
+  
+  textarea.input-box{
+    border: 1px dashed var(--input-border-bg);
+    width: 30%;
+    height: var(--font-size);
+    font-size: calc(var(--font-size)/2);
+    text-align: center;
+    background: var(--bg);
+    color: var(--color-text);
+    margin-bottom: 2px;
+  }
+  
+  .letterRomanjiHover {
+    /* height: 100px;
+    width: 100px;
+    background:red; */
+    height: 0;
+    width: 0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    position: absolute;
+    right: 0;
+    top: 40%;
+    line-height: 3px;
+    /* opacity: 0; */
+  }
+  
+  .fadeIn {
+    animation: fade-in 0.5s;
+    animation-fill-mode: forwards;
+  }
+  
+  .fadeOut {
+    animation: fade-out 0.5s;
+    animation-fill-mode: forwards;
+  }
+  
+  .animationPause{
+    animation-play-state: paused;
+  }
+  
+  #word-eng{
+    color: grey;
+    margin: 0;
+    padding: 0;
+  }
