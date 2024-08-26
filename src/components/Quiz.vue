@@ -102,6 +102,12 @@
     return parseFloat(elem_styles.opacity);
   }
   
+  function inputBoxTextUpdate(e: Event | InputEvent){
+    // let key: string | null = e.data;
+    // inputBoxText.value += e.data;
+    // console.log(e);
+  }
+
   onMounted(() => {
     updateWord();
   });
@@ -111,8 +117,10 @@
 <template>
   <h1 id="word" v-text="word.english" :class="blinkClass" @animationend="blinkClass = ''"></h1>
   <h4 id="word-eng" v-text="word.romanji"></h4>
-  <button id="next-word" @click="submitWord()"> > </button>
-  <textarea class="input-box" v-text="inputBoxText"></textarea>
+  <div>
+    <button id="next-word" @click="submitWord()"> > </button><button id="clear-input" @click="inputBoxText = ''"> X </button>
+  </div>
+  <textarea class="input-box" v-text="inputBoxText" @beforeinput.prevent="e => inputBoxTextUpdate(e)"></textarea>
   <div class="kb">  
     <div ref="letterRomanjiHoverElem" :class="letterRomanjiClasses"><p>{{ letterRomanjiHoverValue }}</p></div>
     <div class="row" v-for="row in kb_data">
